@@ -41,7 +41,7 @@ fun main() {
           "serviceName" : "Laser-beam",
           "owningTeamName" : "Imperial troops",
           "status" : {
-            "type" : "status-down"
+            "type" : "down"
           }
         }
     """.trimIndent()

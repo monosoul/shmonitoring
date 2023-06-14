@@ -12,16 +12,16 @@ sealed class ServiceStatus {
     abstract override fun hashCode(): Int
     abstract override fun toString(): String
 
-    @JsonTypeName("status-up")
+    @JsonTypeName("up")
     data class Up(
         val upTime: Duration,
         val numberOfProcesses: NumberOfProcesses,
     ) : ServiceStatus()
 
-    @JsonTypeName("status-warning")
+    @JsonTypeName("warning")
     data class Warning(val message: WarningMessage) : ServiceStatus()
 
-    @JsonTypeName("status-down")
+    @JsonTypeName("down")
     object Down : ServiceStatus() {
         override fun equals(other: Any?): Boolean = javaClass == other?.javaClass
         override fun hashCode(): Int = javaClass.hashCode()

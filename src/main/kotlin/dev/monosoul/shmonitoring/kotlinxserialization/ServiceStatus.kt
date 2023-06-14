@@ -14,7 +14,7 @@ sealed class ServiceStatus {
     abstract override fun toString(): String
 
     @Serializable
-    @SerialName("status-up")
+    @SerialName("up")
     data class Up(
         @Serializable(with = DurationSerializer::class)
         val upTime: Duration,
@@ -22,11 +22,11 @@ sealed class ServiceStatus {
     ) : ServiceStatus()
 
     @Serializable
-    @SerialName("status-warning")
+    @SerialName("warning")
     data class Warning(val message: WarningMessage) : ServiceStatus()
 
     @Serializable
-    @SerialName("status-down")
+    @SerialName("down")
     object Down : ServiceStatus() {
         override fun toString() = "Down()"
     }
