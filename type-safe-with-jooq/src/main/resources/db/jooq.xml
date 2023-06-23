@@ -37,6 +37,12 @@
                     <includeExpression>.*\.events\.owning_team_name</includeExpression>
                     <converter>dev.monosoul.shmonitoring.persistence.JooqConverters.get()</converter>
                 </forcedType>
+                <forcedType>
+                    <userType>dev.monosoul.shmonitoring.model.ServiceStatus</userType>
+                    <includeTypes>jsonb</includeTypes>
+                    <includeExpression>.*\.events\.service_status</includeExpression>
+                    <converter>dev.monosoul.shmonitoring.persistence.JooqConverters.get()</converter>
+                </forcedType>
             </forcedTypes>
         </database>
     </generator>
