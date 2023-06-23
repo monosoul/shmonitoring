@@ -1,6 +1,5 @@
 import dev.monosoul.jooq.RecommendedVersions.JOOQ_VERSION
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jooq.meta.jaxb.ForcedType
 
 plugins {
     kotlin("jvm")
@@ -25,29 +24,10 @@ tasks {
         }
     }
 
-generateJooqClasses {
-    basePackageName.set("dev.monosoul.shmonitoring.generated")
-    usingJavaConfig {
-        withName("org.jooq.codegen.KotlinGenerator")
-        generate.apply {
-            withKotlinNotNullRecordAttributes(true)
-            database.apply {
-                fun forcedType(modelName: String, type: String, columnName: String) = ForcedType()
-                    .withUserType("dev.monosoul.shmonitoring.model.$modelName")
-                    .withIncludeTypes(type)
-                    .withIncludeExpression(".*\\.events\\.$columnName")
-                    .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()")
-
-                withForcedTypes(
-                    forcedType("EventId", "uuid", "id"),
-                    forcedType("HostName", "text", "host_name"),
-                    forcedType("ServiceName", "text", "service_name"),
-                    forcedType("TeamName", "text", "owning_team_name"),
-                )
-            }
-        }
+    generateJooqClasses {
+        basePackageName.set("dev.monosoul.shmonitoring.generated")
+        usingXmlConfig()
     }
-}
 }
 
 dependencies {
