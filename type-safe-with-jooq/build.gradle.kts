@@ -1,5 +1,6 @@
 import dev.monosoul.jooq.RecommendedVersions.JOOQ_VERSION
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jooq.meta.jaxb.ForcedType
 
 plugins {
     kotlin("jvm")
@@ -30,6 +31,30 @@ tasks {
             withName("org.jooq.codegen.KotlinGenerator")
             generate.apply {
                 withKotlinNotNullRecordAttributes(true)
+                database.apply {
+                    withForcedTypes(
+                        ForcedType()
+                            .withUserType("dev.monosoul.shmonitoring.model.EventId")
+                            .withIncludeTypes("uuid")
+                            .withIncludeExpression(".*\\.events\\.id")
+                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
+                        ForcedType()
+                            .withUserType("dev.monosoul.shmonitoring.model.HostName")
+                            .withIncludeTypes("text")
+                            .withIncludeExpression(".*\\.events\\.host_name")
+                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
+                        ForcedType()
+                            .withUserType("dev.monosoul.shmonitoring.model.ServiceName")
+                            .withIncludeTypes("text")
+                            .withIncludeExpression(".*\\.events\\.service_name")
+                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
+                        ForcedType()
+                            .withUserType("dev.monosoul.shmonitoring.model.TeamName")
+                            .withIncludeTypes("text")
+                            .withIncludeExpression(".*\\.events\\.owning_team_name")
+                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
+                    )
+                }
             }
         }
     }
