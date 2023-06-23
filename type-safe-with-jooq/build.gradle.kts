@@ -25,39 +25,29 @@ tasks {
         }
     }
 
-    generateJooqClasses {
-        basePackageName.set("dev.monosoul.shmonitoring.generated")
-        usingJavaConfig {
-            withName("org.jooq.codegen.KotlinGenerator")
-            generate.apply {
-                withKotlinNotNullRecordAttributes(true)
-                database.apply {
-                    withForcedTypes(
-                        ForcedType()
-                            .withUserType("dev.monosoul.shmonitoring.model.EventId")
-                            .withIncludeTypes("uuid")
-                            .withIncludeExpression(".*\\.events\\.id")
-                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
-                        ForcedType()
-                            .withUserType("dev.monosoul.shmonitoring.model.HostName")
-                            .withIncludeTypes("text")
-                            .withIncludeExpression(".*\\.events\\.host_name")
-                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
-                        ForcedType()
-                            .withUserType("dev.monosoul.shmonitoring.model.ServiceName")
-                            .withIncludeTypes("text")
-                            .withIncludeExpression(".*\\.events\\.service_name")
-                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
-                        ForcedType()
-                            .withUserType("dev.monosoul.shmonitoring.model.TeamName")
-                            .withIncludeTypes("text")
-                            .withIncludeExpression(".*\\.events\\.owning_team_name")
-                            .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()"),
-                    )
-                }
+generateJooqClasses {
+    basePackageName.set("dev.monosoul.shmonitoring.generated")
+    usingJavaConfig {
+        withName("org.jooq.codegen.KotlinGenerator")
+        generate.apply {
+            withKotlinNotNullRecordAttributes(true)
+            database.apply {
+                fun forcedType(modelName: String, type: String, columnName: String) = ForcedType()
+                    .withUserType("dev.monosoul.shmonitoring.model.$modelName")
+                    .withIncludeTypes(type)
+                    .withIncludeExpression(".*\\.events\\.$columnName")
+                    .withConverter("dev.monosoul.shmonitoring.persistence.JooqConverters.get()")
+
+                withForcedTypes(
+                    forcedType("EventId", "uuid", "id"),
+                    forcedType("HostName", "text", "host_name"),
+                    forcedType("ServiceName", "text", "service_name"),
+                    forcedType("TeamName", "text", "owning_team_name"),
+                )
             }
         }
     }
+}
 }
 
 dependencies {
