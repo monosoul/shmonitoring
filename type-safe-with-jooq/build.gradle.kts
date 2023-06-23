@@ -1,8 +1,9 @@
+import dev.monosoul.jooq.RecommendedVersions.JOOQ_VERSION
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    kotlin("plugin.serialization") version libs.versions.kotlin
+    id("dev.monosoul.jooq-docker") version "3.0.22"
 }
 
 val javaVersion = JavaVersion.VERSION_17
@@ -22,13 +23,28 @@ tasks {
             jvmTarget = "$javaVersion"
         }
     }
+
+    generateJooqClasses {
+        basePackageName.set("dev.monosoul.shmonitoring.generated")
+        usingJavaConfig {
+            withName("org.jooq.codegen.KotlinGenerator")
+            generate.apply {
+                withKotlinNotNullRecordAttributes(true)
+            }
+        }
+    }
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.1")
+
+    implementation("org.jooq:jooq-kotlin:$JOOQ_VERSION")
+
+    "org.postgresql:postgresql:42.6.0"
+        .also(::implementation)
+        .also(::jooqCodegen)
 }
